@@ -3,10 +3,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 
 import rootSaga from './sagas';
-import todo from './modules/todo';
+import todo from './models/todo';
+import menu from './models/menu';
 
 const reducers = combineReducers({
   todo,
+  menu,
 });
 
 

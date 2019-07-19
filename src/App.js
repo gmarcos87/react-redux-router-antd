@@ -5,7 +5,7 @@ import { Button } from 'antd';
 import './App.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { set, setAsync, getTodos, isLoading } from './redux/modules/todo';
+import { set, setAsync, getTodos, isLoading } from './redux/models/todo';
 
 const store = configureStore({})
 
