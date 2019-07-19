@@ -1,6 +1,10 @@
 const routes  = {
-    admin: [],
-    business: [],
+    admin: [
+        {type: 'title', text: 'Admin'}
+    ],
+    business: [
+        {type: 'title', text: 'Business'}
+    ],
     personal: [],
     guest: []
 }
