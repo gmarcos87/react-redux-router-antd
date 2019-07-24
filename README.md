@@ -1,2 +1,2 @@
 # inkiri-frontend
-FrontEnd Rect Appp (DApp)
+FrontEnd Rect App (DApp)
