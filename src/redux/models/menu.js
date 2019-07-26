@@ -1,8 +1,7 @@
-import { subscribeSagas } from '../sagas';
 import * as api from '../../services/userApi'
 import { getRoutesByRole } from '../../services/routes'
-import { takeEvery, call, put} from '@redux-saga/core/effects';
-
+import { takeEvery, call, put } from '@redux-saga/core/effects';
+import { store } from '@app/redux/configureStore'
 // ConstantesT
 const GET_ASYNC = 'menu/GET_ASYNC';
 const GET_ASYNC_END = 'menu/GET_ASYNC_END';
@@ -20,24 +19,20 @@ export const cleanMenu = () =>({ type: CLEAN_MENU });
 function* getMenuSaga({ type, payload }) {
   try {
     const {error, data } = yield call(api.getRole, payload.userId)
-    console.log({error,data, payload})
     if (typeof error === 'undefined') {
       yield put(setMenu({ role: data.role, menu: getRoutesByRole( data.role )}))
     }
-    else {
-      yield put(getMenuFail(error))
-    }
   } catch(error) {
+    console.log({error})
     yield put(getMenuFail(error))
   }
   yield put({type: GET_ASYNC_END})
 }
 
 //Se envan las sagas a redux estableciendo que y cuantas veces dispara la funciรณn
-subscribeSagas([
+store.injectSaga('menu', [
   takeEvery(GET_ASYNC, getMenuSaga)
 ])
-
 
 // Selectores - Conocen el stado y retornan la info que es necesaria
 export const isLoading = (state) => state.menu.loading > 0
@@ -45,12 +40,12 @@ export const getMenuItems = (state) => state.menu.items
 
 // El reducer del modelo
 const defaultState = { items: [], loading: 0, error: undefined };
-export default function reducer(state = defaultState, action = {}) {
+function reducer(state = defaultState, action = {}) {
   switch (action.type) {
     case SET:
       return {
         ...state,
-        items: action.payload.menu
+        items: action.payload.menu.items
       };
     case GET_ASYNC:
       return  {
@@ -72,3 +67,5 @@ export default function reducer(state = defaultState, action = {}) {
     default: return state;
   }
 }
+
+store.injectReducer('menu', reducer)

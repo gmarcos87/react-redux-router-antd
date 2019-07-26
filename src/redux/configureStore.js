@@ -2,28 +2,48 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 
-import rootSaga from './sagas';
-import todo from './models/todo';
-import menu from './models/menu';
-import login from './models/login';
+import rootSaga from '@app/redux/sagas';
 
-const reducers = combineReducers({
-  todo,
-  menu,
-  login
-});
+import { createSagaInjector } from './sajasInjector'
 
+const coreReducers = {
+}
 
-const sagaMiddleware = createSagaMiddleware()
+// Configure the store
+export default function configureStore(initialState) {
 
-const createStoreWithMiddleware = composeWithDevTools(
-  applyMiddleware(sagaMiddleware)
-)(createStore); 
+  // Configure middelwares
+  const sagaMiddleware = createSagaMiddleware()
+  const createStoreWithMiddleware = composeWithDevTools(
+    applyMiddleware(sagaMiddleware)
+  )(createStore); 
 
-const configureStore = (initialState) => {
-  const store = createStoreWithMiddleware(reducers, initialState);
-    sagaMiddleware.run(rootSaga)
+  //Create store
+  const store =createStoreWithMiddleware(createReducer(),  initialState)
+  
+  // Add a dictionary to keep track of the registered async reducers
+  store.asyncReducers = {};
+  
+  // Create an inject reducer function
+  // This function adds the async reducer, and creates a new combined reducer
+  store.injectReducer = (key, asyncReducer) => {
+    store.asyncReducers[key] = asyncReducer;
+    store.replaceReducer(createReducer(store.asyncReducers));
+  };
+  
+  //Add async sagas loader to the store
+  store.injectSaga = createSagaInjector(sagaMiddleware.run, rootSaga);
+  //sagaMiddleware.run(rootSaga)
+  
+  // Return the modified store
   return store;
 }
 
-export default configureStore;
+function createReducer(asyncReducers) {
+  return combineReducers({
+    ...coreReducers,
+    ...asyncReducers,
+  });
+}
+
+export const store = configureStore({})

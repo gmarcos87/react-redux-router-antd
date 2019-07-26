@@ -14,7 +14,7 @@ export const DashboardContainer = ({footerText,  TopMenu, Menu, Children}) => {
     return (
         <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-            { Menu? <Menu></Menu>: false }
+            { Menu? <Menu/>: false }
         </Sider>
         <Layout>
           <Header style={{ background: '#fff', padding: 0 }}>

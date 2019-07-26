@@ -1,5 +1,5 @@
-import { subscribeSagas } from '../sagas';
-import { takeEvery, call, put} from '@redux-saga/core/effects';
+import { takeEvery, put } from '@redux-saga/core/effects';
+import { store } from '../configureStore'
 
 // Constantes
 const TRY_LOGIN = 'login/TRY';
@@ -20,18 +20,17 @@ function* tryLoginSaga({ type, payload }) {
   yield put({type: TRY_LOGIN_END})
 }
 
-//Se envan las sagas a redux estableciendo que y cuantas veces dispara la funciรณn
-subscribeSagas([
+//Se envan las sagas a redux estableciendo que y cuantas veces dispara la funcià¸£à¸“n
+store.injectSaga('login', [
   takeEvery(TRY_LOGIN, tryLoginSaga)
-])
-
+]);
 
 // Selectores - Conocen el stado y retornan la info que es necesaria
 export const isLoading = (state) => state.login.loading > 0
 
 // El reducer del modelo
 const defaultState = { loading: 0, role: undefined };
-export default function reducer(state = defaultState, action = {}) {
+function reducer(state = defaultState, action = {}) {
   switch (action.type) {
     case TRY_LOGIN:
       return  {
@@ -51,3 +50,5 @@ export default function reducer(state = defaultState, action = {}) {
       }
     default: return state;
   }}
+
+  store.injectReducer('login', reducer)

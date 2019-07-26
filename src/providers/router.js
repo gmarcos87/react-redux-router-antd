@@ -1,12 +1,15 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Redirect, withRouter } from "react-router-dom";
 import loadable from '@loadable/component'
-import { DashboardContainer } from '../containers/dashboard.container';
-import { BlankContainer } from '../containers/blank.container';
-import { Spin } from 'antd'
+import { BrowserRouter as Router, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from 'react-redux';
-import Login from '../pages/general/login'
 
+import { Spin } from 'antd'
+
+import { BlankContainer } from '@app/containers/blank.container';
+import { DashboardContainer } from '@app/containers/dashboard.container';
+
+import Login from '@app/pages/general/login'
+import MenuByRole from './menu';
 
 const _checkRole = ({role, actualRole, children, history}) => {
     if (role === actualRole) {
@@ -14,7 +17,7 @@ const _checkRole = ({role, actualRole, children, history}) => {
             {children}
         </>
     } else {
-        history.push(`/${actualRole}`);
+        history.push(`/${actualRole}/dashboard`);
         return false;
     }
 }
@@ -31,7 +34,7 @@ const loadableComponent = (area,fileName, container, role)=> {
     })
     let Container;
     if(container === 'dashboard') {
-        Container = ()=> <DashboardContainer Children={ayncComponent} />
+        Container = ()=> <DashboardContainer Children={ayncComponent} Menu={MenuByRole}/>
     } else {
         Container = ()=> <BlankContainer Children={ayncComponent} />
     }
@@ -41,11 +44,11 @@ const loadableComponent = (area,fileName, container, role)=> {
     return ()=><Container />
 }
 
-  export function DashboardRouter({menuItems}) {
+  export function DashboardRouter({routes}) {
   return (
     <Router>
         <Route path="/login" component={CheckLogin} />
-        {menuItems.map(item => <Route key={item.path} path={item.path} component={loadableComponent(item.area, item.fileName, item.container)} /> )}
+        {routes.map(item => <Route key={item.path} path={'/'+item.area+'/'+item.path} component={loadableComponent(item.area, item.fileName, item.container)} /> )}
         <Redirect path={'/'} to={'/login'} />
     </Router>
   );
