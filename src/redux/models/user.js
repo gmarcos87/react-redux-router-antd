@@ -15,10 +15,10 @@ export const setUserState  = (userStateData) =>({ type: SET_USERSTATE, payload: 
 // El reducer del modelo
 const defaultState = { loading: 0, accounts: [] };
 
-// Selectores - Conocen el stado y retornan la info que es necesaria
-export const isLoading       = (state) => state.user.loading > 0
-export const defaultAccount  = (state) => (state.user.accounts && state.user.accounts.length>0) ? state.user.accounts[0] : undefined
-export const allAccounts     = (state) => (state.user.accounts || [])
+// Selectores - Conocen el estado y retornan la info que es necesaria
+export const isLoading         = (state) => state.user.loading > 0
+export const defaultAccount    = (state) => (state.user.accounts && state.user.accounts.length>0) ? state.user.accounts[0] : undefined
+export const allAccounts       = (state) => (state.user.accounts || [])
 
 function reducer(state = defaultState, action = {}) {
   switch (action.type) {

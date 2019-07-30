@@ -10,6 +10,7 @@ import {Keystore, Keygen} from 'eosjs-keygen';
 import * as myEOS from 'eosjs';
 // import { Api, JsonRpc, RpcError } from 'eosjs';
 
+import * as global from '@app/configs/global';
 
 class Login extends Component {
   constructor(props) {

@@ -1,3 +1,4 @@
+
 const versionConfig = {
   
   // DEV/PRIVATE TESTNET
@@ -39,4 +40,10 @@ const api = {
   ]
 };
 
-export { language, api, currency };
+// ToDo: Traer DFuse config from private server!
+const dfuse = {
+  apiKey    : 'web_8a50f2bc42c1df1a41830c359ba74240',
+  network   : 'jungle'
+}
+
+export { language, api, currency, dfuse };

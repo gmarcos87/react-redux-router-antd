@@ -10,11 +10,9 @@ import * as globalCfg from '@app/configs/global';
 
 import { InboundMessageType, createDfuseClient } from '@dfuse/client';
 
-import * as api from '@app/services/inkiriApi';
-
 import './home.css'; 
 
-class Home extends Component {
+class SendMoney extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,7 +45,8 @@ class Home extends Component {
   }
 
   launch = async () => {
-  // launch(){
+    return;
+
     console.log(' LAUNCH clicked')
     if (!globalCfg.dfuse.apiKey) {
       const messages = [
@@ -75,7 +74,7 @@ class Home extends Component {
       this.setState({errorMessages: messages, transfers: [] })
       return;
     }
-
+    
     this.setState({ errorMessages: [], transfers: [] })
 
     try {
@@ -166,7 +165,7 @@ class Home extends Component {
     return (
       <div className="XX-App">
         <div className="XX-header">
-          <h2>Transactions History</h2>
+          <h2>Send money</h2>
           {this.renderErrors()}
           <div className="App-buttons">
             <button className="App-button" onClick={()=>this.launch()}>Launch</button>
@@ -186,11 +185,11 @@ class Home extends Component {
 
 export default connect(
     (state)=> ({
-        userAccount: 	      userRedux.defaultAccount(state),
-        allAccounts: 	      userRedux.allAccounts(state),
-        isLoading: 		      userRedux.isLoading(state)
+        userAccount: 	userRedux.defaultAccount(state),
+        allAccounts: 	userRedux.allAccounts(state),
+        isLoading: 		userRedux.isLoading(state)
     }),
     (dispatch)=>({
         tryUserState: bindActionCreators(userRedux.tryUserState , dispatch)
     })
-)(Home)
+)(SendMoney)

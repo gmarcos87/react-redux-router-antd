@@ -8,6 +8,13 @@ export const pathNames = arrToObj([
     'businessDepositar',
     'businessRetirar',
     'businessCambiar',
+
+    'businessRequestMoney',
+
+    'businessSendMoney',
+    'businessPaymentsAndServices',
+
+    'businessConfiguration'
 ])
 
 const business =[
@@ -26,6 +33,13 @@ const business =[
         container: 'dashboard' 
      },
 
+     {
+       key: pathNames.businessSendMoney,
+       fileName: 'sendMoney',
+       area: 'business',
+       path: 'send-money',
+       container: 'dashboard' 
+    },
 ]
 
 const admin = [];

@@ -1,34 +1,25 @@
-import React, {useState, Component} from 'react'
-import { Button } from 'antd';
-
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
-
-import * as userRedux from '@app/redux/models/user'
-
-import * as globalCfg from '@app/configs/global';
-
+import React, { Component } from 'react';
 import { InboundMessageType, createDfuseClient } from '@dfuse/client';
 
-import * as api from '@app/services/inkiriApi';
+import './App.css';
 
-import './home.css'; 
+const apiKey = process.env.REACT_APP_DFUSE_API_KEY
+const network = process.env.REACT_APP_DFUSE_NETWORK || "mainnet"
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      connected: false,
-      errorMessages: [],
-      transfers: [],
-      balance: {}
-    };
+class App extends Component {
+  state = {
+    connected: false,
+    errorMessages: [],
+    transfers: []
+  }
+
+  constructor() {
+    super()
 
     this.stream = undefined
-    // this.client = undefined
     this.client = createDfuseClient({
-      apiKey:globalCfg.dfuse.apiKey,
-      network:globalCfg.dfuse.network,
+      apiKey,
+      network,
       streamClientOptions: {
         socketOptions: {
           onClose: this.onClose,
@@ -36,9 +27,7 @@ class Home extends Component {
         }
       }
     })
-
   }
-
 
   componentWillUnmount() {
     if (this.stream !== undefined) {
@@ -47,9 +36,7 @@ class Home extends Component {
   }
 
   launch = async () => {
-  // launch(){
-    console.log(' LAUNCH clicked')
-    if (!globalCfg.dfuse.apiKey) {
+    if (!apiKey) {
       const messages = [
         "To correctly run this sample, you need to defined an environment variable",
         "named 'REACT_APP_DFUSE_API_KEY' with the value being your dfuse API token.",
@@ -62,38 +49,24 @@ class Home extends Component {
         "You can obtain a free API key by visiting https://dfuse.io"
       ]
 
-      console.log(' LAUNCH no key')
       this.setState({ connected: false, errorMessages: messages, transfers: [] })
       return
-    }
-
-    if (this.state.connected) {
-      const messages = [
-        "Already connected!!!!"
-      ]
-
-      this.setState({errorMessages: messages, transfers: [] })
-      return;
     }
 
     this.setState({ errorMessages: [], transfers: [] })
 
     try {
       this.stream = await this.client.streamActionTraces({
-        account: "ikmasterooo1", action_name: "transfer"
+        account: "eosio.token", action_name: "transfer"
       }, this.onMessage)
 
-      console.log(' LAUNCH connected')
       this.setState({ connected: true })
     } catch (error) {
-      console.log(' LAUNCH error')
-      console.log(JSON.stringify(error))
       this.setState({ errorMessages: ["Unable to connect to socket.", JSON.stringify(error)] })
     }
   }
 
   onMessage = async (message) => {
-    console.log(' ON  MESSAGE ', JSON.stringify(message))
     if (message.type !== InboundMessageType.ACTION_TRACE) {
       return
     }
@@ -164,33 +137,24 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="XX-App">
-        <div className="XX-header">
-          <h2>Transactions History</h2>
+      <div className="App">
+        <header className="App-header">
+          <h2>Stream Transfers</h2>
           {this.renderErrors()}
           <div className="App-buttons">
-            <button className="App-button" onClick={()=>this.launch()}>Launch</button>
-            <button className="App-button" onClick={()=>this.stop()}>Stop</button>
+            <button className="App-button" onClick={this.launch}>Launch</button>
+            <button className="App-button" onClick={this.stop}>Stop</button>
           </div>
-          <div className="App-main">
+          <main className="App-main">
             <p className="App-status">
               {`Connected: ${this.state.connected ? "Connected (Showing last 100 transfers)" : "Disconnected"}`}
             </p>
             {this.renderTransfers()}
-          </div>
-        </div>
+          </main>
+        </header>
       </div>
     );
   }
 }
 
-export default connect(
-    (state)=> ({
-        userAccount: 	      userRedux.defaultAccount(state),
-        allAccounts: 	      userRedux.allAccounts(state),
-        isLoading: 		      userRedux.isLoading(state)
-    }),
-    (dispatch)=>({
-        tryUserState: bindActionCreators(userRedux.tryUserState , dispatch)
-    })
-)(Home)
+export default App;
