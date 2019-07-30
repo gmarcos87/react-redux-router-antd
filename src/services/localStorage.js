@@ -20,7 +20,7 @@ export function getStorage (area) {
  *  @param {String} area
  *  @param {Object} data
  */
-export function writeStorage (area, data) {
+export function setStorage (area, data) {
     return new Promise((res, rej)=>{
         try {
             const rawData = JSON.stringify(data)
