@@ -1,16 +1,16 @@
-import React, {useState, Component} from 'react'
-import { Layout, Icon, Select } from 'antd';
-import { Anchor } from 'antd';
+import React, {Component} from 'react'
+import { Layout, Icon, Select, Button, Anchor } from 'antd';
+
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import * as userRedux from '@app/redux/models/user'
+import * as loginRedux from '@app/redux/models/login'
 import styles from './index.less';
 
 // import AvatarDropdown from '@app/components/GlobalHeader';
 
-const { Header, Sider, Content } = Layout;
+const { Header } = Layout;
 const { Option } = Select;
-const { Link } = Anchor;
 
 class InkiriHeader extends Component {
   constructor(props) {
@@ -45,7 +45,6 @@ class InkiriHeader extends Component {
               onClick={this.toggle}
             />
             <div className="right">
-
               <div className="header_element_container">
                 <a className="header_element_top_padded header_element_left_padded" target="_blank" href="https://jungle.bloks.io/account/ikadminoooo1">View account on blockexplorer</a>
               </div>
@@ -58,6 +57,7 @@ class InkiriHeader extends Component {
                     ikadminoooo1
                   </Option>
                 </Select>
+                <Button style={{marginLeft: '10px'}}icon={'logout'} onClick={this.props.logout}>Logout</Button>
               </div>
             </div>
           </div>
@@ -74,6 +74,7 @@ export default connect(
         isLoading:     userRedux.isLoading(state)
     }),
     (dispatch)=>({
-        try: bindActionCreators(userRedux.tryUserState , dispatch)
+        try: bindActionCreators(userRedux.tryUserState , dispatch),
+        logout: bindActionCreators(loginRedux.logout, dispatch)
     })
 )(InkiriHeader)
