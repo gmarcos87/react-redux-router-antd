@@ -1,6 +1,8 @@
 import { takeEvery, put } from '@redux-saga/core/effects';
 import { store } from '../configureStore'
 import { tryUserState } from './user'; 
+import { getStorage } from '@app/services/localStorage'
+import * as core from './core';
 
 // Constantes
 const TRY_LOGIN = 'login/TRY';
@@ -12,6 +14,15 @@ export const tryLogin = (privateKey) =>({ type: TRY_LOGIN, payload: privateKey }
 export const set = (loginData) =>({ type: SET_LOGIN, payload: loginData});
 
 //Eventos que requieren del async
+function* loadLoginData() {
+  yield put({type: core.ACTION_START, payload: { login: 'Check local storage'}}))
+  const { data } = yield getStorage('userData');
+  if(data) {
+    yield put(set(data))
+  }
+  yield put({type: core.ACTION_END, payload: 'login'})
+}
+
 function* tryLoginSaga({ type, payload }) {
   const defaultUserId = '1';
   try {
@@ -25,6 +36,7 @@ function* tryLoginSaga({ type, payload }) {
 
 //Se envan las sagas a redux estableciendo que y cuantas veces dispara la funcià¸£à¸“n
 store.injectSaga('login', [
+  takeEvery(core.INIT, loadLoginData),
   takeEvery(TRY_LOGIN, tryLoginSaga)
 ]);
 
