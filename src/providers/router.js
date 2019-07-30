@@ -17,7 +17,12 @@ const _checkRole = ({role, actualRole, children, history}) => {
             {children}
         </>
     } else {
-        history.push(`/${actualRole}/dashboard`);
+        if(actualRole) {
+            history.push(`/${actualRole}/dashboard`);
+        }
+        else {
+            history.push(`/login`);
+        }
         return false;
     }
 }
@@ -48,8 +53,8 @@ const loadableComponent = (area,fileName, container, role)=> {
   return (
     <Router>
         <Route path="/login" component={CheckLogin} />
-        {routes.map(item => <Route key={item.path} path={'/'+item.area+'/'+item.path} component={loadableComponent(item.area, item.fileName, item.container)} /> )}
-        <Redirect path={'/'} to={'/login'} />
+        {routes.map(item => <Route key={item.path} path={'/'+item.area+'/'+item.path} component={loadableComponent(item.area, item.fileName, item.container, item.role)} /> )}
+        <Route path={'/'} component={()=><Redirect to={'/login'} />} />
     </Router>
   );
 }
