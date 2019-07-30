@@ -43,7 +43,6 @@ export const  getAvailableAccounts = () =>   new Promise((res,rej)=> {
 						]
 					} 
 				});
-        
 })
 
 export const  getAccountBalance = (account) =>   new Promise((res,rej)=> {

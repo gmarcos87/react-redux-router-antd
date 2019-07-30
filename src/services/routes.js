@@ -7,8 +7,13 @@ const routes  = {
                 title: 'My money',
                 items: [
                     {
+                        key: pathNames.businessAllInOne,
+                        path: pathNames.businessAllInOne,
+                        title: 'All In One',
+                    },
+                    {
                         key: pathNames.businessExtracto,
-                        path: pathNames.businessDashboard,
+                        path: pathNames.businessExtracto,
                         title: 'Transaction History',
                     },
                     {
@@ -34,7 +39,7 @@ const routes  = {
                 ]
             },
             {
-                key: pathNames.businessDashboard,
+                key: pathNames.businessRequestMoney,
                 title: 'Receive',
                 items: [
                     {
@@ -45,7 +50,7 @@ const routes  = {
                 ]
             },
             {
-                key: pathNames.businessDashboard,
+                key: pathNames.businessSendMoney,
                 title: 'Pay',
                 items: [
                     {
@@ -62,7 +67,7 @@ const routes  = {
             }
             ,
             {
-                key: pathNames.businessDashboard,
+                key: pathNames.businessConfiguration,
                 title: 'Configuration',
                 items: [
                     {
