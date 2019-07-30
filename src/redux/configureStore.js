@@ -1,12 +1,14 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
-
 import rootSaga from '@app/redux/sagas';
+
+import { coreReducer, coreSagas } from './models/core';
 
 import { createSagaInjector } from './sajasInjector'
 
 const coreReducers = {
+  core: coreReducer
 }
 
 // Configure the store
@@ -33,7 +35,6 @@ export default function configureStore(initialState) {
   
   //Add async sagas loader to the store
   store.injectSaga = createSagaInjector(sagaMiddleware.run, rootSaga);
-  //sagaMiddleware.run(rootSaga)
   
   // Return the modified store
   return store;
@@ -47,3 +48,7 @@ function createReducer(asyncReducers) {
 }
 
 export const store = configureStore({})
+
+//Start redux logic
+store.injectSaga('core', coreSagas  )
+setTimeout(()=>store.dispatch({type: 'core/BOOT'}),1000);
