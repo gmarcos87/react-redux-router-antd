@@ -333,7 +333,7 @@ class AllInOne extends Component {
           <div className="App-main">
             
             <div style={{ display: 'block' }}>
-              <h3>Receipt</h3>
+              <h3>Sender/Issuer</h3>
               <Select 
                 defaultValue="ikmasterooo1" 
                 style={{ width: 'auto' }} 
