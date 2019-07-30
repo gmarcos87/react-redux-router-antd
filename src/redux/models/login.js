@@ -53,9 +53,11 @@ store.injectSaga('login', [
 
 // Selectores - Conocen el stado y retornan la info que es necesaria
 export const isLoading = (state) => state.login.loading > 0
+export const accounts = (state) => state.login.accounts || []
+export const actualAccount = (state) => state.login.userId || ''
 
 // El reducer del modelo
-const defaultState = { loading: 0, role: undefined, userId: undefined };
+const defaultState = { loading: 0, role: undefined, userId: undefined, accounts: [] };
 
 function reducer(state = defaultState, action = {}) {
   switch (action.type) {

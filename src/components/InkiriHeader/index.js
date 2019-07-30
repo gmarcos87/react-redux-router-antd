@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import * as userRedux from '@app/redux/models/user'
 import * as loginRedux from '@app/redux/models/login'
+import * as accountsRedux from '@app/redux/models/accounts'
 import styles from './index.less';
 
 // import AvatarDropdown from '@app/components/GlobalHeader';
@@ -18,6 +19,7 @@ class InkiriHeader extends Component {
     this.state = {
       collapsed: false,
     };
+    this.handleChange = this.handleChange.bind(this);
   }
 
 
@@ -31,10 +33,11 @@ class InkiriHeader extends Component {
     return JSON.stringify(account);
   }
   
-  handleChange(value) {
-    console.log(`selected ${value}`);
+  handleChange(accountName) {
+    console.log(`selected ${accountName}`);
+    const account = this.props.allAccounts.find(acc => acc.name === accountName);
+    this.props.tryLogin(account)
   }
-
   render(){
     return (
        <Header style={{ background: '#fff', padding: 0 }}>
@@ -51,11 +54,8 @@ class InkiriHeader extends Component {
 
               <div className="header_element_container">
                 <div style={{ display: 'none' }}> ToDo: obtenet lista acounts desde API </div>
-                <Select defaultValue="ikmasterooo1" style={{ width: 'auto' }} onChange={this.handleChange}>
-                  <Option value="ikmasterooo1">ikmasterooo1</Option>
-                  <Option value="ikadminoooo1" disabled>
-                    ikadminoooo1
-                  </Option>
+                <Select defaultValue={this.props.actualAccount} style={{ width: 'auto' }} onChange={this.handleChange}>
+                  { this.props.allAccounts.map(acc => <Option key={acc.name} value={acc.name}>{acc.name}</Option> )}
                 </Select>
                 <Button style={{marginLeft: '10px'}}icon={'logout'} onClick={this.props.logout}>Logout</Button>
               </div>
@@ -70,11 +70,13 @@ class InkiriHeader extends Component {
 export default connect(
     (state)=> ({
         userAccount:   userRedux.defaultAccount(state),
-        allAccounts:   userRedux.allAccounts(state),
-        isLoading:     userRedux.isLoading(state)
+        allAccounts:   accountsRedux.accounts(state),
+        isLoading:     userRedux.isLoading(state),
+        actualAccount: loginRedux.actualAccount(state)
     }),
     (dispatch)=>({
         try: bindActionCreators(userRedux.tryUserState , dispatch),
+        tryLogin: bindActionCreators(loginRedux.tryLogin, dispatch),
         logout: bindActionCreators(loginRedux.logout, dispatch)
     })
 )(InkiriHeader)
