@@ -19,7 +19,7 @@ export const set = (loginData) =>({ type: SET_LOGIN, payload: loginData});
 function* loadLoginData() {
   yield put({type: core.ACTION_START, payload: { login: 'Check local storage'}})
   const { data } = yield getStorage('login');
-  if(data.privateKey) {
+  if(data && data.privateKey) {
     yield put(tryLogin(data.privateKey, true))
   }
   yield put({type: core.ACTION_END, payload: 'login'})
@@ -75,7 +75,7 @@ function reducer(state = defaultState, action = {}) {
         userId: action.payload.userId,
         role: action.payload.role,
       }
-    case logout:
+    case LOGOUT:
       return defaultState;
     default: return state;
   }}
