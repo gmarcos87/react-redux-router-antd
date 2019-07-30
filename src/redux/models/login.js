@@ -1,7 +1,7 @@
 import { takeEvery, put } from '@redux-saga/core/effects';
 import { store } from '../configureStore'
 import { tryUserState } from './user'; 
-import { getStorage, clearStorage } from '@app/services/localStorage'
+import { getStorage, clearStorage, setStorage } from '@app/services/localStorage'
 import * as core from './core';
 
 // Constantes
@@ -11,23 +11,27 @@ const SET_LOGIN = 'login/SET_LOGIN'
 const LOGOUT = 'login/LOGOUT'
 
 // Creadores de acciones (se pueden usar desde los compoenentes)
-export const tryLogin = (privateKey) =>({ type: TRY_LOGIN, payload: privateKey });
+export const tryLogin = (privateKey, save) =>({ type: TRY_LOGIN, payload: {privateKey, save } });
 export const logout = () => ({type: LOGOUT});
 export const set = (loginData) =>({ type: SET_LOGIN, payload: loginData});
 
 //Eventos que requieren del async
 function* loadLoginData() {
   yield put({type: core.ACTION_START, payload: { login: 'Check local storage'}})
-  const { data } = yield getStorage('userData');
-  if(data) {
-    yield put(set(data))
+  const { data } = yield getStorage('login');
+  if(data.privateKey) {
+    yield put(tryLogin(data.privateKey, true))
   }
   yield put({type: core.ACTION_END, payload: 'login'})
 }
 
 function* tryLoginSaga({ type, payload }) {
   const defaultUserId = '1';
+  const { privateKey, save} = payload
   try {
+    if(payload.save) {
+      setStorage('login',{privateKey, save})
+    }
     yield put(set({userId: defaultUserId, role: 'business'}))
   } catch(e) {
     console.err(e)
