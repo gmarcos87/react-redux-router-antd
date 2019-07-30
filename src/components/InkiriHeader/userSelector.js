@@ -14,7 +14,7 @@ const SelectUser = ({accounts, actualAccount, onChange, loading}) => {
         }
     }
     return (
-        <Select defaultValue={actualAccount} style={{ width: 'auto', minWidth: '130px' }} onChange={sendAccount} loading={loading} placeholder={'Select account'}>
+        <Select defaultValue={actualAccount} style={{ width: '100%' }} onChange={sendAccount} loading={loading} placeholder={'Select account'}>
             { accounts.map(acc => <Option key={acc.name} value={acc.name}>{acc.name}</Option> )}
         </Select>
     )

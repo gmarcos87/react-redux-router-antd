@@ -1,18 +1,18 @@
-import React, { Component, useState } from "react";
-import { Button, Checkbox } from 'antd';
-
+import React, { Component } from "react";
+import { Form, Button, Checkbox } from 'antd';
+import UserSelector from '@app/components/InkiriHeader/userSelector'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import * as loginRedux from '@app/redux/models/login';
+
+import * as global from '@app/configs/global';
 
 import {Keystore, Keygen} from 'eosjs-keygen';
 // import {Eos} from 'eosjs';
 import * as myEOS from 'eosjs';
 // import { Api, JsonRpc, RpcError } from 'eosjs';
 
-import UserSelector from '@app/components/InkiriHeader/userSelector'
-
-import * as global from '@app/configs/global';
+import './login.css'
 
 class Login extends Component {
   constructor(props) {
@@ -98,8 +98,7 @@ class Login extends Component {
 
   }
 
-  render() {
-    
+  render() {   
     // const [seed, setSeed] = useState('');
     // const [privateKey, setKey] = useState('');
     // <Button onClick={()=>this.connectEos()}>Connect</Button>
@@ -107,7 +106,7 @@ class Login extends Component {
     const privKey   = this.state.privKey;
 
     return (
-      <>
+      <Form className="login-form">
         {/* <input placeholder='Input seed' onChange={e => this.setSeed(e.target.value)}></input>
         
         <Button onClick={()=>this.tryGenerate(seed)}>Generate Key</Button>
@@ -115,10 +114,16 @@ class Login extends Component {
         <label>Private Key</label>
         <input placeholder='Private Key' value={privKey}></input>
       */}
-      <UserSelector onChange={(account) => this.setState({account})}/>
-      <Checkbox value={this.state.save} onChange={(e) => this.setState({save: e.target.checked})}>Save credentials</Checkbox>
-        <Button disabled={!this.state.account} onClick={()=>this.props.tryLogin(this.state.account, this.state.save)} loading={this.props.isLoading}>Login</Button>
-      </>
+        <Form.Item>
+          <UserSelector onChange={(account) => this.setState({account})} className="login-user-selector" />
+        </Form.Item>
+        <Form.Item>
+          <Checkbox value={this.state.save} onChange={(e) => this.setState({save: e.target.checked})}>Remember me</Checkbox>
+          <Button type="primary" disabled={!this.state.account} onClick={()=>this.props.tryLogin(this.state.account, this.state.save)} loading={this.props.isLoading}  className="login-form-button">
+            Login
+          </Button>
+        </Form.Item>
+      </Form>
     );
   }
 }
