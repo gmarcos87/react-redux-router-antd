@@ -15,7 +15,7 @@ export const set = (loginData) =>({ type: SET_LOGIN, payload: loginData});
 
 //Eventos que requieren del async
 function* loadLoginData() {
-  yield put({type: core.ACTION_START, payload: { login: 'Check local storage'}}))
+  yield put({type: core.ACTION_START, payload: { login: 'Check local storage'}})
   const { data } = yield getStorage('userData');
   if(data) {
     yield put(set(data))
