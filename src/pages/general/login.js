@@ -1,0 +1,154 @@
+import React, { Component, useState } from "react";
+import { Button } from 'antd';
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import * as loginRedux from '@app/redux/models/login';
+
+import {Keystore, Keygen} from 'eosjs-keygen';
+// import {Eos} from 'eosjs';
+import * as myEOS from 'eosjs';
+// import { Api, JsonRpc, RpcError } from 'eosjs';
+
+
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      seed     : "",
+      privKey  : "",
+      config   : {
+        uriRules: {
+          'active': '.*',
+          'active/**': '.*'
+        },
+        timeoutInMin: 10,
+        timeoutKeyPaths: [
+          'owner',
+          'owner/**'
+        ],
+        keepPublicKeys: true
+      }
+
+    };
+    
+    
+  }
+
+  tryGenerate() {
+    
+    let sessionConfig = {
+      timeoutInMin: 30,
+      uriRules: {
+        'owner' : '/account_recovery',
+        'active': '/(transfer|contracts)',
+        'active/**': '/producers'
+      }
+    }
+
+    let keystore = Keystore('myaccount', sessionConfig)
+    // let eos = Eos.Testnet({keyProvider: keystore.keyProvider})
+
+    Keygen.generateMasterKeys().then(keys => {
+      // create blockchain account called 'myaccount'
+      
+      console.log(JSON.stringify(keys));
+
+      this.setPrivKey(keys);
+      // eos.getAccount('myaccount').then(account => {
+      //   keystore.deriveKeys({
+      //     parent: keys.masterPrivateKey,
+      //     accountPermissions: account.permissions
+      //   })
+      // })
+
+    })
+  }
+
+  setSeed(seed){
+    this.setState({seed:seed});
+  }
+  setPrivKey(privKey){
+    this.setState({privKey:privKey});
+  }
+
+
+  connectEos(){
+    const network = {
+      blockchain: "eos",
+      host: "publicapi-mainnet.eosauthority.com",
+      port: 443,
+      protocol: "https",
+      chainId: "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+    };
+
+    const requiredFields = { accounts: [network] };
+    let chainId = network.chainId;
+    let httpEndpoint = network.protocol + "://" + network.host + ":" + network.port;
+    let eosConnect = myEOS.eos({
+      chainId,
+      httpEndpoint,
+    });
+
+    eosConnect.getAccount('eosfiredream').then(result => console.log(result)).catch(error => console.error(error));
+
+  }
+
+  render() {
+    
+    // const [seed, setSeed] = useState('');
+    // const [privateKey, setKey] = useState('');
+    // <Button onClick={()=>this.connectEos()}>Connect</Button>
+    const seed     = this.state.seed;
+    const privKey   = this.state.privKey;
+
+    return (
+      <>
+        <input placeholder='Input seed' onChange={e => this.setSeed(e.target.value)}></input>
+        
+        <Button onClick={()=>this.tryGenerate(seed)}>Generate Key</Button>
+        
+        <label>Private Key</label>
+        <input placeholder='Private Key' value={privKey}></input>
+        
+        
+         <Button onClick={()=>this.props.tryLogin('xxx')} loading={this.props.isLoading}>Login</Button>
+      </>
+    );
+  }
+}
+
+export default connect(
+    (state)=> ({
+        isLoading: loginRedux.isLoading(state)
+    }),
+    (dispatch)=>({
+        tryLogin: bindActionCreators(loginRedux.tryLogin, dispatch)
+    })
+)(Login)
+
+// import React, {useState} from 'react'
+// import { Button } from 'antd';
+
+// import { connect } from 'react-redux'
+// import { bindActionCreators } from 'redux';
+// import * as loginRedux from '../../redux/models/login'
+
+// const Login = ({tryLogin, isLoading}) => {
+//     const [privateKey, setKey] = useState('');
+//     return (<>
+//         <h2>Make Login</h2>
+//         <textarea placeholder='Private Key' onChange={e => setKey(e.target.value)}>
+//         </textarea>
+//         <Button onClick={()=>tryLogin(privateKey)} loading={isLoading}>Login</Button>
+//     </>)
+// }
+
+// export default connect(
+//     (state)=> ({
+//         isLoading: loginRedux.isLoading(state)
+//     }),
+//     (dispatch)=>({
+//         tryLogin: bindActionCreators(loginRedux.tryLogin, dispatch)
+//     })
+// )(Login)
