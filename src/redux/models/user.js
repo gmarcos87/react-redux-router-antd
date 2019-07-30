@@ -9,7 +9,7 @@ const SET_USERSTATE     = 'userstate/SET_USERSTATE'
 
 // El usuario ya esta logeado
 // Creadores de acciones (se pueden usar desde los compoenentes)
-export const tryUserState  = (username) =>({ type: TRY_USERSTATE, payload: username });
+export const tryUserState  = (accountName) =>({ type: TRY_USERSTATE, payload: accountName });
 export const setUserState  = (userStateData) =>({ type: SET_USERSTATE, payload: userStateData});
 
 // El reducer del modelo
@@ -45,8 +45,7 @@ function* tryLoadUserStateSaga({ type, payload }) {
   try {
     console.log('tryLoadUserStateSaga')
     console.log(JSON.stringify(payload)); 
-    // en payload.username
-    const res = yield api.getAccountInformation(payload.username);
+    const res = yield api.getAccountInformation(payload);
     console.log(JSON.stringify(res)); 
     // assert res.data.accounts
     

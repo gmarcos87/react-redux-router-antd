@@ -10,6 +10,8 @@ import {Keystore, Keygen} from 'eosjs-keygen';
 import * as myEOS from 'eosjs';
 // import { Api, JsonRpc, RpcError } from 'eosjs';
 
+import UserSelector from '@app/components/InkiriHeader/userSelector'
+
 import * as global from '@app/configs/global';
 
 class Login extends Component {
@@ -106,15 +108,16 @@ class Login extends Component {
 
     return (
       <>
-        <input placeholder='Input seed' onChange={e => this.setSeed(e.target.value)}></input>
+        {/* <input placeholder='Input seed' onChange={e => this.setSeed(e.target.value)}></input>
         
         <Button onClick={()=>this.tryGenerate(seed)}>Generate Key</Button>
         
         <label>Private Key</label>
         <input placeholder='Private Key' value={privKey}></input>
-        <Checkbox value={this.state.save} onChange={(e) => this.setState({save: e.target.checked})}>Save credentials</Checkbox>
-        
-         <Button onClick={()=>this.props.tryLogin('xxx', this.state.save)} loading={this.props.isLoading}>Login</Button>
+      */}
+      <UserSelector onChange={(account) => this.setState({account})}/>
+      <Checkbox value={this.state.save} onChange={(e) => this.setState({save: e.target.checked})}>Save credentials</Checkbox>
+        <Button disabled={!this.state.account} onClick={()=>this.props.tryLogin(this.state.account, this.state.save)} loading={this.props.isLoading}>Login</Button>
       </>
     );
   }
