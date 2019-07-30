@@ -24,14 +24,16 @@ const business =[
        fileName: 'allInOne',
        area: 'business',
        path: 'dashboard',
-       container: 'dashboard' 
+       container: 'dashboard',
+       role: 'business'
     },
     {
         key: pathNames.businessUnderConstruction,
         fileName: 'under-construction',
         area: 'business',
         path: 'proximamente',
-        container: 'dashboard' 
+        container: 'dashboard',
+        role: 'business'
      },
      {
        key: pathNames.businessSendMoney,
