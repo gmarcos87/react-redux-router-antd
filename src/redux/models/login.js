@@ -1,16 +1,18 @@
 import { takeEvery, put } from '@redux-saga/core/effects';
 import { store } from '../configureStore'
 import { tryUserState } from './user'; 
-import { getStorage } from '@app/services/localStorage'
+import { getStorage, clearStorage } from '@app/services/localStorage'
 import * as core from './core';
 
 // Constantes
 const TRY_LOGIN = 'login/TRY';
 const TRY_LOGIN_END = 'login/TRY_LOGIN_END';
 const SET_LOGIN = 'login/SET_LOGIN'
+const LOGOUT = 'login/LOGOUT'
 
 // Creadores de acciones (se pueden usar desde los compoenentes)
 export const tryLogin = (privateKey) =>({ type: TRY_LOGIN, payload: privateKey });
+export const logout = () => ({type: LOGOUT});
 export const set = (loginData) =>({ type: SET_LOGIN, payload: loginData});
 
 //Eventos que requieren del async
@@ -34,10 +36,15 @@ function* tryLoginSaga({ type, payload }) {
   yield put( tryUserState (defaultUserId))
 }
 
+function* logoutSaga( ) {
+  yield clearStorage();
+}
+
 //Se envan las sagas a redux estableciendo que y cuantas veces dispara la funcià¸£à¸“n
 store.injectSaga('login', [
   takeEvery(core.INIT, loadLoginData),
-  takeEvery(TRY_LOGIN, tryLoginSaga)
+  takeEvery(TRY_LOGIN, tryLoginSaga),
+  takeEvery(LOGOUT, logoutSaga)
 ]);
 
 // Selectores - Conocen el stado y retornan la info que es necesaria
@@ -64,6 +71,8 @@ function reducer(state = defaultState, action = {}) {
         userId: action.payload.userId,
         role: action.payload.role,
       }
+    case logout:
+      return defaultState;
     default: return state;
   }}
 
