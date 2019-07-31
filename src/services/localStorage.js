@@ -1,11 +1,16 @@
+import { encrypt, decrypt } from "../utils/encrypt";
+
 /**
  *
  * @param {String} area
  */
-export function getStorage (area) {
-    return new Promise((res, rej) =>   {
+export function getStorage (area, secret='insecure') {
+    return new Promise(async(res, rej) =>   {
         try {
-            const rawData = localStorage.getItem(area);
+            let rawData = localStorage.getItem(area);
+            if(secret) {
+                rawData = await decrypt(rawData, secret)
+            }
             const data = JSON.parse(rawData);
             res({data});
         }
@@ -20,10 +25,13 @@ export function getStorage (area) {
  *  @param {String} area
  *  @param {Object} data
  */
-export function setStorage (area, data) {
-    return new Promise((res, rej)=>{
+export function setStorage (area, data, secret='insecure') {
+    return new Promise(async(res, rej)=>{
         try {
-            const rawData = JSON.stringify(data)
+            let rawData = JSON.stringify(data)
+            if (secret) {
+                rawData = await encrypt(data, secret)
+            }
             localStorage.setItem(area, rawData)
             res({status: 'ok'})
         } catch (error) {
